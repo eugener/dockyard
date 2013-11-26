@@ -1,10 +1,13 @@
 package org.dockyard;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+
+import javafx.scene.input.*;
 
 import java.util.List;
 
@@ -26,6 +29,39 @@ public class DockBase extends SplitPane {
         hSplit.getItems().add(tabs);
 
         getItems().add(hSplit);
+
+        tabs.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(javafx.scene.input.MouseEvent mouseEvent) {
+                 /* allow any transfer mode */
+                Dragboard db = tabs.startDragAndDrop(TransferMode.ANY);
+
+                /* put a string on dragboard */
+                ClipboardContent content = new ClipboardContent();
+                Tab tab = tabs.getSelectionModel().getSelectedItem();
+                content.put(DataFormat.PLAIN_TEXT,  DockUtils.getId(tab));
+                db.setContent(content);
+
+                mouseEvent.consume();
+            }
+        });
+
+        tabs.setOnDragOver(new EventHandler <DragEvent>() {
+            public void handle(DragEvent event) {
+                /* data is dragged over the target */
+                /* accept it only if it is  not dragged from the same node
+                 * and if it has a string data */
+                if (event.getGestureSource() != tabs &&
+                        event.getDragboard().hasString()) {
+                    /* allow for both copying and moving, whatever user chooses */
+                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                }
+
+                event.consume();
+            }
+        });
+
+
     }
 
     /**
@@ -36,18 +72,14 @@ public class DockBase extends SplitPane {
     public void dock(DockContent content, DockSite site) {
 
         if ( site == DockSite.TAB ) {
-            tabs.getTabs().add(buildTab(content.getTitle(), content.getContent()));
+            tabs.getTabs().add(DockUtils.buildTab(content));
         } else {
             if ( site != null ) getSite(site).dock(content, DockSite.TAB);
         }
 
     }
 
-    private Tab buildTab(String title, Node content) {
-        Tab tab = new Tab(title);
-        tab.setContent(content);
-        return tab;
-    }
+
 
     private DockBase getSite(DockSite site) {
         DockBase side = sites[site.ordinal()];
