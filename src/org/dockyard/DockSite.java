@@ -6,7 +6,7 @@ public enum DockSite {
     BOTTOM(false, false),
     LEFT(true, true),
     RIGHT(true, false),
-    TAB(false, false);
+    TAB(false, false); // should be last
 
     private final boolean horizontal;
     private final boolean first;
@@ -16,11 +16,11 @@ public enum DockSite {
         this.first = first;
     }
 
-    public boolean isHorizontal() {
+    boolean isHorizontal() {
         return horizontal;
     }
 
-    public boolean isFirst() {
+    boolean isFirst() {
         return first;
     }
 }

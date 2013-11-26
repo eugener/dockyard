@@ -1,44 +1,46 @@
 package org.dockyard;
 
-import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import org.dockyard.app.DockContent;
+
+import java.util.List;
 
 public class DockBase extends SplitPane {
 
     private TabPane tabs = new TabPane();
-    private DockBase[] sides = new DockBase[4];
-
+    private DockBase[] sites = new DockBase[DockSite.values().length-1];
     private SplitPane hSplit = new SplitPane();
 
 
     public DockBase() {
 
         setOrientation(Orientation.VERTICAL);
+        setDividerPositions(100,100);
+
         hSplit.setOrientation(Orientation.HORIZONTAL);
+        hSplit.setDividerPositions(100,100);
+
         hSplit.getItems().add(tabs);
 
         getItems().add(hSplit);
     }
 
+    /**
+     * Dock content to one the possible dock sites
+     * @param content
+     * @param site
+     */
     public void dock(DockContent content, DockSite site) {
 
-        switch (site) {
-            case TAB: {
-                tabs.getTabs().add(buildTab(content.getTitle(), content.getContent()));
-                break;
-            }
-            default: {
-                getSide(site).dock(content, DockSite.TAB);
-                break;
-            }
-
-
+        if ( site == DockSite.TAB ) {
+            tabs.getTabs().add(buildTab(content.getTitle(), content.getContent()));
+        } else {
+            if ( site != null ) getSite(site).dock(content, DockSite.TAB);
         }
+
     }
 
     private Tab buildTab(String title, Node content) {
@@ -47,12 +49,12 @@ public class DockBase extends SplitPane {
         return tab;
     }
 
-    private DockBase getSide(DockSite site) {
-        DockBase side = sides[site.ordinal()];
+    private DockBase getSite(DockSite site) {
+        DockBase side = sites[site.ordinal()];
         if (side == null) {
             side = new DockBase();
-            sides[site.ordinal()] = side;
-            ObservableList<Node> items = (site.isHorizontal() ? hSplit : this).getItems();
+            sites[site.ordinal()] = side;
+            List<Node> items = (site.isHorizontal() ? hSplit : this).getItems();
             if (site.isFirst()) {
                 items.add(0, side);
             } else {

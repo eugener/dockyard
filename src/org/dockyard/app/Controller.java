@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import org.dockyard.DockContent;
 import org.dockyard.DockSite;
 
 import java.net.URL;
@@ -17,7 +18,8 @@ public class Controller implements Initializable {
 
 
     @FXML
-    protected void initialize() {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         dockbase.dock(buildContent("Label"), DockSite.TAB);
         dockbase.dock(buildContent("Left"), DockSite.LEFT);
         dockbase.dock(buildContent("Left 2"), DockSite.LEFT);
@@ -31,11 +33,6 @@ public class Controller implements Initializable {
         dockbase.dock(buildContent("Bottom 2"), DockSite.BOTTOM);
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        initialize();
-    }
-
     private DockContent buildContent(final String title) {
         return new DockContent() {
             @Override
@@ -45,7 +42,9 @@ public class Controller implements Initializable {
 
             @Override
             public Node getContent() {
-                return new Label(title);
+                Label lb = new Label(title);
+                lb.setMinSize(100,100);
+                return lb;
             }
         };
     }
