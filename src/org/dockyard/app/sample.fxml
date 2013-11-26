@@ -1,0 +1,7 @@
+<?import javafx.scene.layout.BorderPane?>
+<?import org.dockyard.DockBase?>
+<BorderPane fx:controller="org.dockyard.app.Controller" xmlns:fx="http://javafx.com/fxml">
+    <center>
+        <DockBase fx:id="dockbase"/>
+    </center>
+</BorderPane>
