@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.dockyard.DockContent;
+import org.dockyard.Dockable;
 import org.dockyard.DockSite;
 
 import java.net.URL;
@@ -33,8 +33,8 @@ public class Controller implements Initializable {
         dockbase.dock(buildContent("Bottom 2"), DockSite.BOTTOM);
     }
 
-    private DockContent buildContent(final String title) {
-        return new DockContent() {
+    private Dockable buildContent(final String title) {
+        return new Dockable() {
             @Override
             public String getTitle() {
                 return title;

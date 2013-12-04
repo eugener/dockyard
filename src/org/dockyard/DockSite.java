@@ -6,7 +6,7 @@ public enum DockSite {
     BOTTOM(false, false),
     LEFT(true, true),
     RIGHT(true, false),
-    TAB(false, false); // should be last
+    TAB(false, false); // should be last for the index system to work
 
     private final boolean horizontal;
     private final boolean first;

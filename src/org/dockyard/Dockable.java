@@ -2,7 +2,7 @@ package org.dockyard;
 
 import javafx.scene.Node;
 
-public interface DockContent {
+public interface Dockable {
 
     String getTitle();
     Node getContent();

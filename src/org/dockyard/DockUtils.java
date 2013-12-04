@@ -10,33 +10,42 @@ public class DockUtils {
 
     private DockUtils(){}
 
-    private static String CONTENT_ID  = "{dockyard}.content.id";
-    private static String TAB_CONTENT = "{dockyard}.tab.content";
+    private static String PREFIX       = "{dockyard}.";
+    private static String CONTENT_ID   = PREFIX + "dockable.id";
+    private static String TAB_DOCKABLE = PREFIX + "tab.dockable";
 
 
-    public static final Tab buildTab(DockContent content) {
+    public static final Tab buildTab(Dockable content) {
         Tab tab = new Tab(content.getTitle());
         tab.setContent(content.getContent());
-        tab.getProperties().put(TAB_CONTENT,content);
+        tab.getProperties().put(TAB_DOCKABLE,content);
         return tab;
     }
 
-    public static final DockContent getContent(Tab tab) {
-        return (DockContent) tab.getProperties().get(TAB_CONTENT);
+    public static final Dockable getDockable(Node node) {
+        return (Dockable) node.getProperties().get(TAB_DOCKABLE);
     }
 
-    public static final String getId( Node node ) {
+    /**
+     * Get properties from known objects. Currently supported are Node, Tab
+     * @param obj
+     * @return object properties
+     * @throws java.lang.IllegalArgumentException if object types is not supported
+     */
+    private static ObservableMap<Object, Object> getProperties( Object obj ) {
+        if (obj instanceof Node) ((Node)obj).getProperties();
+        if (obj instanceof Tab) ((Tab)obj).getProperties();
+        throw new IllegalArgumentException("Unknown object type: " + obj.getClass().getName());
+    }
 
-        ObservableMap<Object, Object> props = node.getProperties();
+    public static final String getId( Object obj ) {
+        ObservableMap<Object, Object> props = getProperties(obj);
         String id = (String) props.get(CONTENT_ID);
         if ( id == null ) {
-            id =  UUID.randomUUID().toString();
+            id = PREFIX + UUID.randomUUID().toString();
             props.put(CONTENT_ID,id);
         }
         return id;
     }
 
-    public static final String getId( Tab tab ) {
-        return getId( getContent(tab).getContent());
-    }
 }
